@@ -1,0 +1,258 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "header": {
+      "type": "object",
+      "properties": {
+        "messageID": {
+          "type": "string"
+        },
+        "featureCode": {
+          "type": "string"
+        },
+        "featureName": {
+          "type": "string"
+        },
+        "serviceCode": {
+          "type": "string"
+        },
+        "serviceName": {
+          "type": "string"
+        },
+        "serviceSubCategory": {
+          "type": "string"
+        },
+        "minorServiceVersion": {
+          "type": "string"
+        },
+        "channelCode": {
+          "type": "string"
+        },
+        "channelName": {
+          "type": "string"
+        },
+        "routeCode": {
+          "type": "string"
+        },
+        "timeStamp": {
+          "type": "string"
+        },
+        "serviceMode": {
+          "type": "string"
+        },
+        "subscribeEvents": {
+          "type": "string"
+        },
+        "callBackURL": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "messageID",
+        "featureCode",
+        "featureName",
+        "serviceCode",
+        "serviceName",
+        "serviceSubCategory",
+        "minorServiceVersion",
+        "channelCode",
+        "channelName",
+        "routeCode",
+        "timeStamp",
+        "serviceMode"
+      ]
+    },
+    "requestPayload": {
+      "type": "object",
+      "properties": {
+        "transactionInfo": {
+          "type": "object",
+          "properties": {
+            "companyCode": {
+              "type": "string"
+            },
+            "mnemonic": {
+              "type": "string"
+            },
+            "firstName": {
+              "type": "string"
+            },
+            "middleName": {
+              "type": "string"
+            },
+            "lastName": {
+              "type": "string"
+            },
+            "street": {
+              "type": "string"
+            },
+            "town": {
+              "type": "string"
+            },
+            "sectorCode": {
+              "type": "string"
+            },
+            "branchCode": {
+              "type": "string"
+            },
+            "industryCode": {
+              "type": "string"
+            },
+            "targetCode": {
+              "type": "string"
+            },
+            "nationality": {
+              "type": "string"
+            },
+            "customerStatus": {
+              "type": "string"
+            },
+            "residence": {
+              "type": "string"
+            },
+            "documentDetails": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "documentNumber": {
+                      "type": "string"
+                    },
+                    "documentType": {
+                      "type": "string"
+                    },
+                    "documentHolderName": {
+                      "type": "string"
+                    },
+                    "issuingAuthority": {
+                      "type": "string"
+                    },
+                    "issueDate": {
+                      "type": "string"
+                    },
+                    "expirtyDate": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "documentNumber",
+                    "documentType",
+                    "documentHolderName",
+                    "issuingAuthority",
+                    "issueDate",
+                    "expirtyDate"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "documentNumber": {
+                      "type": "string"
+                    },
+                    "documentType": {
+                      "type": "string"
+                    },
+                    "documentHolderName": {
+                      "type": "string"
+                    },
+                    "issuingAuthority": {
+                      "type": "string"
+                    },
+                    "issueDate": {
+                      "type": "string"
+                    },
+                    "expirtyDate": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "documentNumber",
+                    "documentType",
+                    "documentHolderName",
+                    "issuingAuthority",
+                    "issueDate",
+                    "expirtyDate"
+                  ]
+                }
+              ]
+            },
+            "contactDetails": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "mobileNumber": {
+                      "type": "string"
+                    },
+                    "emailAddress": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "mobileNumber",
+                    "emailAddress"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "mobileNumber": {
+                      "type": "string"
+                    },
+                    "emailAddress": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "mobileNumber",
+                    "emailAddress"
+                  ]
+                }
+              ]
+            },
+            "notificationLanguage": {
+              "type": "string"
+            },
+            "kcbSector": {
+              "type": "string"
+            },
+            "customerSegmentCode": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "companyCode",
+            "mnemonic",
+            "firstName",
+            "middleName",
+            "lastName",
+            "street",
+            "town",
+            "sectorCode",
+            "branchCode",
+            "industryCode",
+            "targetCode",
+            "nationality",
+            "customerStatus",
+            "residence",
+            "documentDetails",
+            "contactDetails",
+            "notificationLanguage",
+            "kcbSector",
+            "customerSegmentCode"
+          ]
+        }
+      },
+      "required": [
+        "transactionInfo"
+      ]
+    }
+  },
+  "required": [
+    "header",
+    "requestPayload"
+  ]
+}

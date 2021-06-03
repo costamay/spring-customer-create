@@ -1,0 +1,323 @@
+spring:
+  application:
+    name: create-customer
+  profiles:
+    active: aro
+
+info:
+  app:
+    name: create-customer
+    description: This service its a mock of Customer Creationand Update.
+    version: 1.0.0
+
+pod:
+  name: create-customer
+  
+# spring boot management server instance properties
+management:
+  server:
+    port: 8081
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics
+      base-path: /actuator
+
+# spring boot server instance properties
+server:
+  port: 8081
+  undertow:
+    worker-threads: 30
+    max-http-post-size: 0
+
+# camel configuration
+camel:
+  springboot:
+    jmx-enabled: false
+    main-run-controller: true
+    name: create-customer
+    shutdownTimeout: 1
+    xmlRests: false
+    xmlRoutes: false
+  health:
+    enabled: false
+    indicator:
+      enabled: true
+  component:
+    servlet:
+      name: servlet
+      mapping:
+        enabled: true
+        context-path: /api/*
+      
+# project configuration
+adapter:
+  api:
+    path: /api
+    enableCors: true
+  api-docs:
+    path: /api-docs
+    version: 0.0.1
+    title: create-customer
+  redelivery:
+    attempts: 0
+    delay: 0
+
+#logging configuration path
+logging:
+  config: classpath:logback.xml
+
+---
+spring:
+  profiles: local
+  
+# vault connector configuration
+vault:
+  service:
+    endpoint:
+      scheme: http
+      host: kcb-connector-vault-kcb-common-utils.apps.test.aro.kcbgroup.com
+      port: 80
+      path: /api/vault/credentials
+      method: GET
+      timeout: 1000
+    environment: kcb-mw-secrets  
+      
+correlation:
+  replyToQueue:
+      RES:
+        prefix: KCB.
+        sufix: .ADAP.RES
+      REQ:
+        prefix: KCB.
+        sufix: .ATOM.REQ 
+        
+# camel amqp component configuration
+amqp:
+  accept-messages-while-stopping: false
+  acknowledgement-mode-name: AUTO_ACKNOWLEDGE
+  allow-null-body: false
+  always-copy-message: false
+  async-consumer: true
+  async-start-listener: false
+  async-stop-listener: false
+  auto-startup: true
+  concurrent-consumers: 30
+  delivery-mode: 1
+  delivery-persistent: false
+  disable-reply-to: true
+  disable-time-to-live: true
+  explicit-qos-enabled: false
+  iddle-timeout: 0
+  max-concurrent-consumers: 50
+  max-messages-per-task: -1
+  password: admin
+  preserve-message-qos: true
+  priority: 4
+  receive-timeout: 2000
+  time-to-live: "-1"
+  username: admin
+  host: localhost
+  port: 5672
+  protocol: amqp
+  parameters: transport.trustAll=true&transport.verifyHost=false&amqp.idleTimeout=120000
+  max-connections: 50
+  max-active-sessions: 150
+  force-async-send: false
+
+# redis configuration
+# run this command to connect to remote redis: oc port-forward kcb-redis-cache-1-hdpfz 16379:6379
+# change password property using the redirected one 16379
+redis:
+  serviceName: localhost
+  servicePort: 6379
+  maxActive: 30
+  maxIdle: 30
+  minIdle: 10
+  blockWhenExhausted: true
+  maxWaitSeconds: 2
+  minEvictableIdleTimeSeconds: 120
+  timeBetweenEvictionRunsSeconds: 60
+  testOnBorrow: false
+  testWhileIdle: true
+  password: 
+  timeOutSeconds: 3
+  expireSeconds: 120
+
+# spring boot server instance properties
+server:
+  port: 8081
+
+---
+spring:
+  profiles: aro
+  
+correlation:
+  replyToQueue:
+      RES:
+        prefix: KCB.
+        sufix: .ADAP.RES
+      REQ:
+        prefix: KCB.
+        sufix: .ATOM.REQ
+        
+# vault connector configuration
+vault:
+  service:
+    endpoint:
+      scheme: http
+      host: kcb-connector-vault-kcb-common-utils.apps.test.aro.kcbgroup.com
+      port: 80
+      path: /api/vault/credentials
+      method: GET
+      timeout: 1000
+    environment: kcb-dev-secrets  
+
+# camel amqp component configuration
+amqp:
+  accept-messages-while-stopping: false
+  acknowledgement-mode-name: AUTO_ACKNOWLEDGE
+  allow-null-body: false
+  always-copy-message: false
+  async-consumer: true
+  async-start-listener: false
+  async-stop-listener: false
+  auto-startup: true
+  concurrent-consumers: 30
+  delivery-mode: 1
+  delivery-persistent: false
+  disable-reply-to: true
+  disable-time-to-live: true
+  explicit-qos-enabled: false
+  iddle-timeout: 0
+  max-concurrent-consumers: 50
+  max-messages-per-task: -1
+  password: redhat
+  preserve-message-qos: true
+  priority: 4
+  receive-timeout: 2000
+  time-to-live: "-1"
+  username: redhat
+  host: localhost
+  port: 5671
+  protocol: amqps
+  parameters: transport.trustAll=true&transport.verifyHost=false&amqp.idleTimeout=120000
+  max-connections: 50
+  max-active-sessions: 150
+  force-async-send: false
+
+# redis configuration
+# run this command to connect to remote redis: oc port-forward kcb-redis-cache-1-hdpfz 16379:6379
+# change password property using the redirected one 16379
+redis:
+  serviceName: kcb-redis-cache
+  servicePort: 6379
+  maxActive: 30
+  maxIdle: 30
+  minIdle: 10
+  blockWhenExhausted: true
+  maxWaitSeconds: 2
+  minEvictableIdleTimeSeconds: 120
+  timeBetweenEvictionRunsSeconds: 60
+  testOnBorrow: false
+  testWhileIdle: true
+  password: 
+  timeOutSeconds: 3
+  expireSeconds: 120
+  
+# spring boot management server instance properties
+management:
+  server:
+    port: 8080
+    
+# spring boot server instance properties
+server:
+  port: 8080
+  
+---
+spring:
+  profiles: mock
+  
+correlation:
+  replyToQueue:
+      RES:
+        prefix: KCB.
+        sufix: .ADAP.RES
+      REQ:
+        prefix: KCB.
+        sufix: .ATOM.REQ
+        
+# vault connector configuration
+vault:
+  service:
+    endpoint:
+      scheme: http
+      host: kcb-connector-vault-kcb-common-utils.apps.test.aro.kcbgroup.com
+      port: 80
+      path: /api/vault/credentials
+      method: GET
+      timeout: 1000
+    environment: kcb-dev-secrets  
+
+# camel amqp component configuration
+amqp:
+  accept-messages-while-stopping: false
+  acknowledgement-mode-name: AUTO_ACKNOWLEDGE
+  allow-null-body: false
+  always-copy-message: false
+  async-consumer: true
+  async-start-listener: false
+  async-stop-listener: false
+  auto-startup: true
+  concurrent-consumers: 30
+  delivery-mode: 1
+  delivery-persistent: false
+  disable-reply-to: true
+  disable-time-to-live: true
+  explicit-qos-enabled: false
+  iddle-timeout: 0
+  max-concurrent-consumers: 50
+  max-messages-per-task: -1
+  password: admin
+  preserve-message-qos: true
+  priority: 4
+  receive-timeout: 2000
+  time-to-live: "-1"
+  username: admin
+  host: localhost
+  port: 5672
+  protocol: amqp
+  parameters: transport.trustAll=true&transport.verifyHost=false&amqp.idleTimeout=120000
+  max-connections: 50
+  max-active-sessions: 150
+  force-async-send: false
+  
+# redis configuration
+redis:
+  serviceName: localhost
+  servicePort: 6379
+  maxActive: 30
+  maxIdle: 30
+  minIdle: 10
+  blockWhenExhausted: true
+  maxWaitSeconds: 2
+  minEvictableIdleTimeSeconds: 120
+  timeBetweenEvictionRunsSeconds: 60
+  testOnBorrow: false
+  testWhileIdle: true
+  password: 
+  timeOutSeconds: 3
+  expireSeconds: 120
+  
+# spring boot management server instance properties
+management:
+  server:
+    port: 8080
+    
+# spring boot server instance properties
+server:
+  port: 8080
+  
+---

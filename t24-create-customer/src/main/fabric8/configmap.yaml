@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-create-customer
+data:
+  #t24.service.endpoint.port: 8080
+  #t24.service.endpoint.host: mock-t24-create-customer
+  t24.service.endpoint.port: 8443
+  t24.service.endpoint.host: 172.16.102.219
+  t24.service.endpoint.scheme: https
+  t24.service.endpoint.timeout: 2000
+  t24.service.endpoint.path: /T24KCBAccountOpening/services
+  amqp.host: kcb-amq-broker-amq-amqp-ssl.kcb-common-helpers
+  amqp.port: 5671
+  amqp.protocol: amqps
+  vault.service.endpoint.scheme: http
+  vault.service.endpoint.host: kcb-connector-vault.kcb-common-utils
+  vault.service.endpoint.port: 8080
+  vault.service.endpoint.timeout: 30000
+  vault.service.environment: kcb-mw-secrets
+  truststore.path: /mnt/secrets/kcb-truststore-pubcerts.jks
+  redis.host: kcb-redis-cache.kcb-common-helpers
+  redis.port: 6379

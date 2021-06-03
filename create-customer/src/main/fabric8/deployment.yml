@@ -1,0 +1,98 @@
+metadata:
+  annotations:
+    app.openshift.io/connects-to: t24-create-customer
+  labels:
+    app.kubernetes.io/component: Adapter
+    app.kubernetes.io/part-of: Create-Customer
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: true  #Sidecar to istio
+    spec:
+      containers:
+        - 
+          resources:
+            requests:
+              cpu: 450m
+              memory: 512Mi
+            limits:
+              cpu: 900m
+              memory: 1024Mi
+          env:
+          - name: SPRING_APPLICATION_JSON
+            value: '{"server":{"undertow":{"io-threads":1, "worker-threads":20}}}'
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name  
+          - name: AMQP_PROTOCOL
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-create-customer
+                key: amqp.protocol
+          - name: AMQP_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-create-customer
+                key: amqp.host
+          - name: AMQP_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-create-customer
+                key: amqp.port
+          - name: AMQP_PARAMETERS
+            value: transport.trustAll=true&transport.verifyHost=false&amqp.idleTimeout=120000
+          - name: JAEGER_SERVICE_NAME
+            value: create-customer
+          - name: JAEGER_SAMPLER_TYPE
+            value: const
+          - name: JAEGER_SAMPLER_PARAM
+            value: 1
+          - name: JAEGER_ENDPOINT
+            value: http://jaeger-collector.istio-system.svc:14268/api/traces
+          - name: JAEGER_PROPAGATION
+            value: b3
+          - name: VAULT_SERVICE_ENDPOINT_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-create-customer
+                key: vault.service.endpoint.port
+          - name: VAULT_SERVICE_ENDPOINT_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-create-customer
+                key: vault.service.endpoint.host
+          - name: VAULT_SERVICE_ENDPOINT_TIMEOUT
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-create-customer
+                key: vault.service.endpoint.timeout
+          - name: VAULT_SERVICE_ENDPOINT_SCHEME
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-create-customer
+                key: vault.service.endpoint.scheme
+          - name: VAULT_SERVICE_ENVIROMENT
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-create-customer
+                key: vault.service.environment
+# Redis
+          - name: REDIS_SERVICENAME
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-create-customer
+                key: redis.host
+          - name: REDIS_SERVICEPORT
+            valueFrom:
+              configMapKeyRef:
+                name: configmap-create-customer
+                key: redis.port
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: create-customer-secret
+                key: redis.password
+                
+                

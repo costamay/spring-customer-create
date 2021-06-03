@@ -1,0 +1,278 @@
+spring:
+  profiles:
+    active: aro
+
+info:
+  app:
+    name: t24-create-customer
+    description: 'This service will create customer account'
+    version: 1.0.0
+
+# spring boot management server instance properties
+management:  
+  server:
+    port: 8082
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics
+      base-path: /actuator
+      
+truststore:
+  path: /mnt/secrets/kcb-truststore-pubcerts.jks
+  password:
+  keystoretype: JKS
+  scheme: https4     
+  
+  
+# spring boot server instance properties
+server:
+  port: 8082
+  undertow:
+    worker-threads: 30
+    max-http-post-size: 0
+          
+# camel configuration
+camel:
+  springboot:
+    jmx-enabled: false
+    main-run-controller: true
+    name: t24-create-customer
+    shutdownTimeout: 1
+    xmlRests: false
+    xmlRoutes: false
+  health:
+    enabled: false
+    indicator:
+      enabled: true
+
+#logging configuration path
+logging:
+  config: classpath:logback.xml
+
+---
+spring:
+  profiles: local
+  
+truststore:
+  path: /mnt/secrets/kcb-truststore-pubcerts.jks
+  password:
+  keystoretype: JKS
+  scheme: https4
+# t24 configuration
+t24:
+  properties:
+    operand: EQ
+    columnName: ACCOUNT.NO
+    xpath:
+      success: //ns6:KCBCustomerCreationResponse/Status/successIndicator = 'Success'
+      transaction-id: //ns6:KCBCustomerCreationResponse/Status/transactionId/text()
+      first-name: //ns4:SHORTNAME/text()
+      customer-fullname: //ns4:SHORTNAME/text()
+      customer-id: //ns6:KCBCustomerCreationResponse/CUSTOMERType/@id
+      messages-list: //ns6:KCBCustomerCreationResponse/Status/messages
+  service:
+    endpoint:
+      scheme: http
+      host: localhost
+      port: 8080
+      path: /T24AccountOpening/services
+      method: POST
+      timeout: 2000
+component:
+  endpoint:
+    scheme: http4
+    uri: ${component.endpoint.scheme}://t24ServiceEndpoint?throwExceptionOnFailure=false&socketTimeout=${t24.service.endpoint.timeout}
+ 
+#AMQ
+amqp:
+  accept-messages-while-stopping: false
+  acknowledgement-mode-name: AUTO_ACKNOWLEDGE
+  allow-null-body: false
+  always-copy-message: false
+  async-consumer: true
+  async-start-listener: false
+  async-stop-listener: false
+  auto-startup: true
+  concurrent-consumers: 30
+  delivery-mode: 1
+  delivery-persistent: false
+  disable-reply-to: true
+  disable-time-to-live: true
+  explicit-qos-enabled: false
+  iddle-timeout: 0
+  max-concurrent-consumers: 50
+  max-messages-per-task: -1
+  password: admin
+  preserve-message-qos: true
+  priority: 4
+  receive-timeout: 2000
+  time-to-live: "-1"
+  username: admin
+  host: localhost
+  port: 5672
+  protocol: amqp
+  parameters: transport.trustAll=true&transport.verifyHost=false&amqp.idleTimeout=120000
+  max-connections: 50
+  max-active-sessions: 150
+  force-async-send: true
+  consumer:
+    endpoint: KCB.401.4001.10.001.CUSTOMER.ATOM.REQ
+  
+# spring boot management server instance properties
+management:
+  server:
+    port: 8082
+    
+# spring boot server instance properties
+server:
+  port: 8082
+
+---
+
+spring:
+  profiles: aro
+   
+# t24 configuration        
+t24:
+  properties:
+    operand: EQ
+    columnName: ACCOUNT.NO
+    xpath:
+      success: string(//ns6:KCBCustomerCreationResponse/Status/successIndicator) = 'Success'
+      transaction-id: //ns6:KCBCustomerCreationResponse/Status/transactionId/text()
+      first-name: //ns4:SHORTNAME/text()
+      customer-fullname: //ns4:SHORTNAME/text()
+      customer-id: //ns6:KCBCustomerCreationResponse/CUSTOMERType/@id
+      messages-list: //ns6:KCBCustomerCreationResponse/Status/messages
+  service:
+    endpoint:
+      scheme: https
+      host: 172.16.102.219
+      port: 8443
+      path: /T24AccountOpening/services
+      method: POST
+      timeout: 2000
+
+component:
+  endpoint:
+    scheme: https4
+    uri: ${component.endpoint.scheme}://t24ServiceEndpoint?throwExceptionOnFailure=false&socketTimeout=${t24.service.endpoint.timeout}
+
+#AMQ
+amqp:
+  accept-messages-while-stopping: false
+  acknowledgement-mode-name: AUTO_ACKNOWLEDGE
+  allow-null-body: false
+  always-copy-message: false
+  async-consumer: true
+  async-start-listener: false
+  async-stop-listener: false
+  auto-startup: true
+  concurrent-consumers: 30
+  delivery-mode: 1
+  delivery-persistent: false
+  disable-reply-to: true
+  disable-time-to-live: true
+  explicit-qos-enabled: false
+  iddle-timeout: 0
+  max-concurrent-consumers: 50
+  max-messages-per-task: -1
+  password: redhat
+  preserve-message-qos: true
+  priority: 4
+  receive-timeout: 2000
+  time-to-live: "-1"
+  username: redhat
+  host: kcb-amq-broker-amq-amqp-ssl.kcb-common-helpers
+  port: 5671
+  protocol: amqps
+  parameters: transport.trustAll=true&transport.verifyHost=false&amqp.idleTimeout=120000
+  max-connections: 50
+  max-active-sessions: 150
+  force-async-send: true
+  consumer:
+    endpoint: KCB.401.4001.10.001.CUSTOMER.ATOM.REQ
+  
+  
+ # spring boot management server instance properties
+management:
+  server:
+    port: 8080
+    
+# spring boot server instance properties
+server:
+  port: 8080
+  
+---
+
+spring:
+  profiles: mock
+     
+
+  
+# t24 configuration        
+t24:
+  properties:
+    operand: EQ
+    columnName: ACCOUNT.NO
+    xpath:
+      success: string(//ns6:KCBCustomerCreationResponse/Status/successIndicator) = 'Success'
+      transaction-id: //ns6:KCBCustomerCreationResponse/Status/transactionId/text()
+      customer-id: //ns6:KCBCustomerCreationResponse/CUSTOMERType/@id
+      messages-list: //ns6:KCBCustomerCreationResponse/Status/messages
+  service:
+    endpoint:
+      scheme: http
+      host: localhost
+      port: 8080
+      path: /T24AccountOpening/services
+      method: POST
+      timeout: 2000
+
+#AMQ
+amqp:
+  accept-messages-while-stopping: false
+  acknowledgement-mode-name: AUTO_ACKNOWLEDGE
+  allow-null-body: false
+  always-copy-message: false
+  async-consumer: true
+  async-start-listener: false
+  async-stop-listener: false
+  auto-startup: true
+  concurrent-consumers: 30
+  delivery-mode: 1
+  delivery-persistent: false
+  disable-reply-to: true
+  disable-time-to-live: true
+  explicit-qos-enabled: false
+  iddle-timeout: 0
+  max-concurrent-consumers: 50
+  max-messages-per-task: -1
+  password: admin
+  preserve-message-qos: true
+  priority: 4
+  receive-timeout: 2000
+  time-to-live: "-1"
+  username: admin
+  host: localhost
+  port: 5672
+  protocol: amqp
+  parameters: transport.trustAll=true&transport.verifyHost=false&amqp.idleTimeout=120000
+  max-connections: 50
+  max-active-sessions: 150
+  force-async-send: true
+  consumer:
+    endpoint: KCB.401.4001.10.001.CUSTOMER.ATOM.REQ
+  
+  
+ # spring boot management server instance properties
+management:
+  server:
+    port: 8080
+    
+# spring boot server instance properties
+server:
+  port: 8080

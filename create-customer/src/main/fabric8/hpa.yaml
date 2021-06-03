@@ -1,0 +1,16 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: create-customer
+spec:
+  scaleTargetRef:
+    kind: DeploymentConfig
+    name: create-customer
+    apiVersion: apps.openshift.io/v1
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 50
